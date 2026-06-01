@@ -1,1 +1,166 @@
+class Account:
+    DataBase = []
+    def __init__(self, name, password):
+        self.name = name
+        self.password = password
+        self.Balance = 0
+        self.History = []
+        Account.DataBase.append(self)
 
+    @classmethod ## method to find accounts in data base
+    def find_account(cls, name):
+        for account in cls.DataBase:
+            if account.name == name:
+                return account
+
+        return None
+
+    ## withdrew method
+    def Withdraw(self, amount, password):
+        if password != self.password:
+            print("wrong password")
+            return
+        
+        if amount <= 0:
+            print("Invalid Amount")
+            return
+        
+        if amount > self.Balance:
+            print("Insufficient funds")
+            return
+        
+        self.Balance -= amount
+
+        self.History.append(f"Withdrew {amount}")
+
+        print("WithDrawed Amount", amount)
+        print("Remaining balance", self.Balance)
+    
+    ## Deposite method
+    def Deposit(self, amount, password):
+        if password != self.password:
+            print("wrong password")
+            return
+        
+        if amount <= 0:
+            print("Invalid Amount")
+            return
+        
+        self.Balance += amount
+
+        self.History.append(f"Deposited {amount}")
+
+        print("Current balance", self.Balance)
+
+    ## balance checking method
+    def balance(self, password):
+        if password != self.password:
+            print("wrong password")
+            return
+        
+        print("Current Balance:", self.Balance)
+    
+    ## history checking method
+    def history(self, password):
+        if password != self.password:
+            print("Wrong password")
+            return
+        
+        print(self.History)
+
+
+while True:
+    print("\n=== Bank Menu ===")
+    print("1. Create Account")
+    print("2. Deposit")
+    print("3. Withdraw")
+    print("4. Check Balance")
+    print("5. Check History")
+    print("6. Show Accounts")
+    print("7. Exit")
+
+    choice = input("Enter choice: ")
+
+    if choice == "1":
+        name = input("Enter name: ")
+
+        if Account.find_account(name):
+            print("Account already exists")
+            continue
+
+        password = input("Create password: ")
+
+        Account(name, password)
+
+        print("Account created successfully")
+
+    elif choice == "2":
+        name = input("Enter account name: ")
+
+        account = Account.find_account(name)
+
+        if account:
+            amount = int(input("Enter amount: "))
+            password = input("Enter password: ")
+
+            account.Deposit(amount, password)
+
+        else:
+            print("Account not found")
+
+    elif choice == "3":
+        name = input("Enter account name: ")
+
+        account = Account.find_account(name)
+
+        if account:
+            amount = int(input("Enter amount: "))
+            password = input("Enter password: ")
+
+            account.Withdraw(amount, password)
+
+        else:
+            print("Account not found")
+
+    elif choice == "4":
+        name = input("Enter account name: ")
+
+        account = Account.find_account(name)
+
+        if account:
+            password = input("Enter password: ")
+
+            account.balance(password)
+
+        else:
+            print("Account not found")
+
+    elif choice == "5":
+        name = input("Enter account name: ")
+
+        account = Account.find_account(name)
+
+        if account:
+            password = input("Enter Password: ")
+
+            account.history(password)
+
+        else:
+            print("Account not found")
+
+    elif choice == "6":
+        print("\nAccounts:")
+
+        if len(Account.DataBase) == 0:
+            print("No accounts found")
+
+        else:
+            for account in Account.DataBase:
+                print(account.name)
+
+    elif choice == "7":
+        print("Goodbye")
+        break
+
+    else:
+        print("Invalid choice")
